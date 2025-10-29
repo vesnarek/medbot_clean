@@ -1,4 +1,3 @@
-
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -16,7 +15,7 @@ app = FastAPI()
 def ping():
     return {"ok": True}
 
-# простое in-memory-хранилище сессий
+
 SESS: dict[str, dict] = {}
 
 @app.post("/api/chat")
@@ -58,5 +57,5 @@ async def chat(req: Request):
 
     return JSONResponse({"session_id": sid, "reply": reply, "done": next_state == S_DONE})
 
-# статика: чат доступен по /web/chat.html
+
 app.mount("/web", StaticFiles(directory="web_fullbot_static", html=True), name="static")

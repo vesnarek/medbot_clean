@@ -19,8 +19,6 @@ def _make_client() -> OpenAI:
     http = httpx.Client(
         verify=certifi.where(),
         timeout=httpx.Timeout(30.0, connect=10.0, read=30.0),
-        # proxies — убрать; старые httpx не поддерживают этот kwarg
-        # trust_env=True по умолчанию — если заданы HTTP(S)_PROXY в окружении, httpx сам их подхватит
     )
     return OpenAI(api_key=key, base_url=base_url, organization=org, http_client=http)
 

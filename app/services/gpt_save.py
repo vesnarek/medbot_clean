@@ -4,7 +4,7 @@ from typing import Optional, Tuple, List, Dict
 from gigachat import GigaChat
 
 
-# ---------- helpers ----------
+
 
 def _env(name: str, default: Optional[str] = None) -> Optional[str]:
     v = os.getenv(name)
@@ -34,7 +34,7 @@ def _current_chat_model() -> str:
     )
 
 
-# ---------- system prompt (PNEI-centered, GNM only as metaphor) ----------
+
 
 SYSTEM_PROMPT = """
 Ты — внимательный и чуткий помощник по здоровью и самоощущению. Твоя задача — помогать человеку понять его состояние
@@ -84,7 +84,7 @@ SYSTEM_PROMPT = """
 """.strip()
 
 
-# ---------- low-level chat call ----------
+
 
 def _sdk_chat_sync(messages: List[Dict[str, str]], model: Optional[str] = None, **kwargs) -> Dict:
     req = {"messages": messages, "model": model or _current_chat_model()}
@@ -103,7 +103,7 @@ def _sdk_chat_sync(messages: List[Dict[str, str]], model: Optional[str] = None, 
         }
 
 
-# ---------- utils ----------
+
 
 def _split_answer_and_followup(text: str) -> Tuple[str, Optional[str]]:
     if "\n---\n" in text:
@@ -119,7 +119,7 @@ def _split_answer_and_followup(text: str) -> Tuple[str, Optional[str]]:
     return text.strip(), None
 
 
-# ---------- high-level: first and final answers ----------
+
 
 async def generate_gpt_response(user_data: dict) -> Tuple[str, Optional[str]]:
     diagnosis = user_data.get("diagnosis", "не указан")

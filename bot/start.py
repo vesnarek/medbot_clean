@@ -111,7 +111,7 @@ async def begin_session(message: Message, state: FSMContext):
         "Если да, опишите его, или напишите «нет», если диагноза нет."
     )
 
-# Получаем диагноз
+
 @dp.message(SessionStates.entering_diagnosis)
 async def handle_diagnosis(message: Message, state: FSMContext):
     diagnosis = message.text.strip().lower()
@@ -138,7 +138,7 @@ async def handle_diagnosis(message: Message, state: FSMContext):
             "Также, пожалуйста, укажите дату, когда были сданы анализы."
         )
 
-# Обработка текста анализов
+
 @dp.message(SessionStates.entering_analyses, F.text)
 async def handle_analysis_text(message: Message, state: FSMContext):
     text = message.text.strip().lower()
@@ -162,7 +162,7 @@ async def handle_analysis_text(message: Message, state: FSMContext):
             "Напишите ваш симптом в свободной форме."
         )
 
-# Обработка фото с анализами
+
 @dp.message(SessionStates.entering_analyses, F.photo)
 async def handle_analysis_photo(message: Message, state: FSMContext):
     photo: PhotoSize = message.photo[-1]
@@ -182,14 +182,14 @@ async def handle_analysis_photo(message: Message, state: FSMContext):
     )
 
 
-# Симптомы
+
 @dp.message(SessionStates.entering_symptoms)
 async def handle_custom_symptom(message: Message, state: FSMContext):
     await state.update_data(symptoms=message.text)
     await state.set_state(SessionStates.entering_onset)
     await message.answer("Когда это началось? Можете указать точную дату или примерно: «месяц назад», «неделю назад» и т.д.")
 
-# Время появления симптомов
+
 @dp.message(SessionStates.entering_onset)
 async def handle_onset(message: Message, state: FSMContext):
     await state.update_data(onset=message.text)
@@ -197,7 +197,7 @@ async def handle_onset(message: Message, state: FSMContext):
     await message.answer("Что происходило в вашей жизни в тот момент?\n\n"
                          "Были ли стрессовые события, перемены, конфликты, потери?")
 
-# Жизненные события
+
 @dp.message(SessionStates.entering_context)
 async def handle_context(message: Message, state: FSMContext):
     await state.update_data(context=message.text)
@@ -211,7 +211,7 @@ async def handle_context(message: Message, state: FSMContext):
         "Или опишите своими словами."
     )
 
-# Психоэмоциональное состояние
+
 @dp.message(SessionStates.entering_psycho)
 async def handle_psycho_state(message: Message, state: FSMContext):
     await state.update_data(psycho_state=message.text)
@@ -221,7 +221,7 @@ async def handle_psycho_state(message: Message, state: FSMContext):
         "Переезд, развод, потеря близкого человека, увольнение, смена ролей?"
     )
 
-# Жизненные события продолжение
+
 @dp.message(SessionStates.entering_life_events)
 async def handle_life_events(message: Message, state: FSMContext):
     await state.update_data(life_events=message.text)
@@ -239,14 +239,14 @@ async def handle_life_events(message: Message, state: FSMContext):
 
     await state.set_state(SessionStates.waiting_follow_up)
 
-# Ответ на уточняющий вопрос
+
 @dp.message(SessionStates.waiting_follow_up)
 async def handle_follow_up_answer(message: Message, state: FSMContext):
     await state.update_data(follow_up_answer=message.text)
     await state.set_state(SessionStates.deep_question_1)
     await message.answer("Теперь немного глубже. Что изменилось в вашей жизни до появления симптома?")
 
-# Глубокие вопросы
+
 @dp.message(SessionStates.deep_question_1)
 async def handle_deep_q1(message: Message, state: FSMContext):
     await state.update_data(deep_q1=message.text)
@@ -338,7 +338,7 @@ async def show_sessions(message: Message):
     for row in rows:
         user_id, created_at, symptoms, psycho, gpt_reply = row
 
-        # Получаем имя пользователя (если возможно)
+
         try:
             user = await bot.get_chat(user_id)
             username = f"@{user.username}" if user.username else user.full_name
@@ -402,7 +402,7 @@ async def restart_session(message: Message, state: FSMContext):
         "Какие симптомы беспокоят вас в первую очередь?\n"
         "Напишите ваш симптом в свободной форме.\n\n"
         "Примеры: головная боль, бессонница, тревожность, усталость и т.д.",
-        reply_markup=start_keyboard  # ← вернули стартовую клаву
+        reply_markup=start_keyboard
     )
     await state.set_state(SessionStates.entering_symptoms)
 
@@ -415,7 +415,7 @@ async def test_pdf(message: Message):
     from aiogram.types import FSInputFile
     import tempfile
 
-    # Фейковые данные для теста
+
     user_data = {
         "symptoms": "Головная боль",
         "onset": "2 недели назад",
@@ -427,7 +427,7 @@ async def test_pdf(message: Message):
     }
     gpt_reply = "Похоже, ваше состояние связано со стрессом. Рекомендуется отдых, поддержка близких и консультация специалиста."
 
-    # Генерация PDF
+
     pdf_bytes = generate_session_pdf(user_data, gpt_reply)
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
